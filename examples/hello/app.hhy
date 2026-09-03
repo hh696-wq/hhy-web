@@ -1,0 +1,18 @@
+import "../../lib/hhyweb.hhy" as hhyweb
+
+fn home(request) {
+    return hhyweb.json({
+            framework: "HHY Web",
+            version: hhyweb.version,
+            message: "Hello, HHY Web!",
+            request_id: request.id
+    })
+}
+
+hhyweb.minimal()
+    |> hhyweb.get("/", home)
+    |> hhyweb.serve({
+        host: "127.0.0.1",
+        port: to_int(args[0]),
+        workers: 1
+})

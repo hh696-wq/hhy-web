@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install HHY
+        run: curl -fsSL https://hhylang.dev/install.sh | sh
+      - name: Check and test
+        env:
+          PATH: ${{ github.workspace }}/.hhy-bin:${{ env.PATH }}
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          make test

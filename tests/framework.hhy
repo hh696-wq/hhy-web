@@ -1,0 +1,16 @@
+import "../lib/hhyweb.hhy" as hhyweb
+
+let parsed = hhyweb.request_json({ body: "{\"name\":\"HHY\"}" })
+if not parsed.ok {
+    exit(1)
+}
+if parsed.value.name != "HHY" {
+    exit(1)
+}
+if hhyweb.version != "0.1.0" {
+    exit(1)
+}
+
+{ ok: true, version: hhyweb.version }
+    |> encode_json
+    |> print

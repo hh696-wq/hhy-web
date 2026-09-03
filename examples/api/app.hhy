@@ -1,0 +1,52 @@
+import "../../lib/hhyweb.hhy" as hhyweb
+
+fn logging_guard(request) {
+    if request.path == "/admin" {
+        return hhyweb.problem(403, "forbidden", "This demo route is protected")
+    }
+    return null
+}
+
+fn home(request) {
+    return hhyweb.json({ ok: true, service: "books" })
+}
+
+fn book(request) {
+    return hhyweb.json({ id: request.params.id, title: "Flow Systems" })
+}
+
+fn create_book(request) {
+    let parsed = hhyweb.request_json(request)
+    if not parsed.ok {
+        return parsed.error
+    }
+    return hhyweb.created({ id: "new-book", book: parsed.value })
+}
+
+fn events(request) {
+    return hhyweb.sse(["connected", "ready"])
+}
+
+fn api(application) {
+    return application
+        |> hhyweb.get("/api/books/:id", book)
+        |> hhyweb.post("/api/books", create_book)
+}
+
+hhyweb.app({
+        cors: { origin: "*" },
+        gzip: true,
+        health: "/healthz",
+        metrics: "/metrics",
+        trust_proxy: false
+})
+    |> hhyweb.use(logging_guard)
+    |> hhyweb.get("/", home)
+    |> hhyweb.get("/events", events)
+    |> hhyweb.mount(api)
+    |> hhyweb.serve({
+        host: "127.0.0.1",
+        port: to_int(args[0]),
+        max_body: 1048576,
+        workers: 2
+})
