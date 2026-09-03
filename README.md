@@ -57,6 +57,15 @@ hhyweb.app({
 
 See [`examples/api/app.hhy`](examples/api/app.hhy) for a complete API.
 
+## Browser dashboard
+
+```sh
+./bin/hhy-web run examples/dashboard/app.hhy --port 8080
+```
+
+Open <http://127.0.0.1:8080/>. The page calls `/api/status` and `/api/hello`
+and displays live Runtime, Bytecode engine, worker, and Request ID information.
+
 ## Development
 
 ```sh

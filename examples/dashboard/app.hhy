@@ -1,0 +1,41 @@
+import "../../lib/hhyweb.hhy" as hhyweb
+
+fn dashboard(request) {
+    return hhyweb.html(read_text(path("examples/dashboard/index.html")))
+}
+
+fn status(request) {
+    return hhyweb.json({
+            ok: true,
+            framework: "HHY Web",
+            framework_version: hhyweb.version,
+            runtime: "HHY Language v1.4.3",
+            engine: "Bytecode",
+            workers: 2,
+            request_id: request.id
+    })
+}
+
+fn hello(request) {
+    return hhyweb.json({
+            message: request.query_params.name,
+            request_id: request.id
+    })
+}
+
+hhyweb.app({
+        cors: null,
+        gzip: true,
+        health: "/healthz",
+        metrics: "/metrics",
+        trust_proxy: false
+})
+    |> hhyweb.get("/", dashboard)
+    |> hhyweb.get("/api/status", status)
+    |> hhyweb.get("/api/hello", hello)
+    |> hhyweb.serve({
+        host: "127.0.0.1",
+        port: to_int(args[0]),
+        max_body: 1048576,
+        workers: 2
+})

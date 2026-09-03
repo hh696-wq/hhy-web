@@ -32,6 +32,15 @@ hhyweb.minimal()
 
 完整示例见 [`examples/api/app.hhy`](examples/api/app.hhy)。
 
+## 可视化界面
+
+```sh
+./bin/hhy-web run examples/dashboard/app.hhy --port 8080
+```
+
+启动后打开 <http://127.0.0.1:8080/>。页面会调用 `/api/status` 和
+`/api/hello`，并展示 Runtime、Bytecode 引擎、Worker 与 Request ID 状态。
+
 ## 验证
 
 ```sh
